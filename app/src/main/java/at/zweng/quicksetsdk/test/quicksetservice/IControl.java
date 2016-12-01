@@ -6,6 +6,7 @@ import android.os.RemoteException;
 
 /**
  * Service client class. Used to interact with the bound UEI QuickSet service.
+ * Package name doesn't matter, but class must be called "IControl"!!
  */
 public class IControl {
     public static final String ACTION = "com.uei.control.IControl";

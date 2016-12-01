@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -13,7 +14,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import at.zweng.quicksetsdk.test.quicksetservice.IControl;
+import eu.chainfire.libsuperuser.Shell;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Test QuickSet SDK";
@@ -29,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnSendIrPattern;
     // client API for the service:
     private IControl mControl;
+
+
     /**
      * Service Connection used to control the bound QuickSet SDK Service
      */
@@ -58,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // start background task
+        (new BackgroundIrEnableTask()).execute();
         bindUiElements();
     }
 
@@ -91,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Catched Remote Exception while trying to send command to QuickSet Service.", e);
         }
     }
+
 
     /**
      * Bind buttons in UI..
@@ -131,5 +142,89 @@ public class MainActivity extends AppCompatActivity {
     private void setTextView(String msg) {
         textView.setText(msg);
     }
+
+
+    /**
+     * Async task, running in the background, to enable IR emitter:
+     */
+    private class BackgroundIrEnableTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            // this method is executed in a background thread
+            // no problem calling su here
+            boolean result = enableIrEmitter();
+            Log.i(TAG, "Enabling IR emitter succesful: " + result);
+            return null;
+        }
+
+        /**
+         * Enable IR emitter by writing  '1' > /sys/remote/enable
+         * First we check if the file is writable for us and if not we try as root.
+         *
+         * @return
+         */
+        private boolean enableIrEmitter() {
+            try {
+                File enableFile = new File("/sys/remote/enable");
+                Log.i(TAG, "enableFile getCanonicalPath(): " + enableFile.getCanonicalPath());
+                Log.i(TAG, "enableFile exists(): " + enableFile.exists());
+                if (!enableFile.exists()) {
+                    Log.w(TAG, "File '/sys/remote/enable' doesn't exist.");
+                    return false;
+                }
+                Log.i(TAG, "enableFile isFile(): " + enableFile.isFile());
+                Log.i(TAG, "enableFile canRead(): " + enableFile.canRead());
+                Log.i(TAG, "enableFile canWrite(): " + enableFile.canWrite());
+                if (enableFile.canWrite()) {
+                    return tryToEnableNormally(enableFile);
+                } else {
+                    Log.w(TAG, "Sorry, don't have write permission for: file '/sys/remote/enable'. We will try to use root permission:");
+                    return tryToEnableAsRoot();
+                }
+            } catch (Exception ioe) {
+                Log.e(TAG, "Exception when opening sys file:", ioe);
+                return false;
+            }
+        }
+
+        /**
+         * Try to enable as normal user.
+         *
+         * @param enableFile enable sys file
+         */
+        private boolean tryToEnableNormally(File enableFile) {
+            Log.i(TAG, "AS NORMAL USER: Writing '1' to '/sys/remote/enable' to enable IR emitter.");
+            try {
+                FileWriter fileWriter = new FileWriter(enableFile);
+                fileWriter.write("1");
+                fileWriter.flush();
+                fileWriter.close();
+                Log.i(TAG, "Done. IR Emitter should be enabled.");
+                return true;
+            } catch (IOException e1) {
+                Log.e(TAG, "Exception when opening sys file:", e1);
+                return false;
+            }
+        }
+
+        /**
+         * Try to use SuperSU to enable IR blaster
+         */
+        private boolean tryToEnableAsRoot() {
+            boolean suAvailable = Shell.SU.available();
+            if (suAvailable) {
+                Log.i(TAG, "AS ROOT: Writing '1' to '/sys/remote/enable' to enable IR emitter.");
+                Shell.SU.run(new String[]{
+                        "echo 1 > /sys/remote/enable"
+                });
+                return true;
+            } else {
+                Log.i(TAG, "Sorry, no root available.");
+                return false;
+            }
+        }
+
+    }
+
 
 }
