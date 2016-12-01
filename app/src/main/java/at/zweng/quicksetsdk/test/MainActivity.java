@@ -24,15 +24,19 @@ import eu.chainfire.libsuperuser.Shell;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Test QuickSet SDK";
 
+    // carrier frequency:
     private static final int TEST_FREQUENCY = 38028;
+    // some (made up) test pattern:
     private static final int[] TEST_PATTERN = {169, 168, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 3694};
-    private static final int[] SAMSUNG_POWER_TOGGLE_COUNT = {169, 168, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 63, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 63, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 64, 21, 21, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 63, 21, 1794, 169, 168, 21, 21, 21, 3694};
+
     // is the service bound
     boolean mBound = false;
+
     // buttons
     private TextView textView;
     private Button btnConnectService;
     private Button btnSendIrPattern;
+
     // client API for the service:
     private IControl mControl;
 
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // start background task
+        // start background task to make "echo 1 > /sys/remote/enable"
         (new BackgroundIrEnableTask()).execute();
         bindUiElements();
     }
@@ -145,7 +149,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Async task, running in the background, to enable IR emitter:
+     * Async task, running in the background, to enable IR emitter,
+     * by doing: "echo 1 > /sys/remote/enable"
      */
     private class BackgroundIrEnableTask extends AsyncTask<Void, Void, Void> {
         @Override
@@ -153,12 +158,12 @@ public class MainActivity extends AppCompatActivity {
             // this method is executed in a background thread
             // no problem calling su here
             boolean result = enableIrEmitter();
-            Log.i(TAG, "Enabling IR emitter succesful: " + result);
+            Log.i(TAG, "Was enabling IR emitter succesful: " + result);
             return null;
         }
 
         /**
-         * Enable IR emitter by writing  '1' > /sys/remote/enable
+         * Enable IR emitter by writing  '1' into /sys/remote/enable
          * First we check if the file is writable for us and if not we try as root.
          *
          * @return
@@ -175,14 +180,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "enableFile isFile(): " + enableFile.isFile());
                 Log.i(TAG, "enableFile canRead(): " + enableFile.canRead());
                 Log.i(TAG, "enableFile canWrite(): " + enableFile.canWrite());
-                if (enableFile.canWrite()) {
+                if (enableFile.isFile() && enableFile.canWrite()) {
                     return tryToEnableNormally(enableFile);
                 } else {
                     Log.w(TAG, "Sorry, don't have write permission for: file '/sys/remote/enable'. We will try to use root permission:");
                     return tryToEnableAsRoot();
                 }
             } catch (Exception ioe) {
-                Log.e(TAG, "Exception when opening sys file:", ioe);
+                Log.e(TAG, "Exception when opening file: /sys/remote/enable", ioe);
                 return false;
             }
         }
@@ -217,14 +222,13 @@ public class MainActivity extends AppCompatActivity {
                 Shell.SU.run(new String[]{
                         "echo 1 > /sys/remote/enable"
                 });
+                Log.i(TAG, "Done. IR Emitter should be enabled.");
                 return true;
             } else {
                 Log.i(TAG, "Sorry, no root available.");
                 return false;
             }
         }
-
     }
-
 
 }
